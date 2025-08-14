@@ -11,8 +11,10 @@ function Products() {
   const { items: products, status } = useSelector((state: any) => state.products);
 
   useEffect(() => {
+    if(!products.length){
     dispatch(fetchProducts());
-  }, [dispatch])
+    }
+  }, [dispatch, products.length]);
 
   if (status === 'loading') {
     return (
@@ -23,7 +25,7 @@ function Products() {
   }
 
   if(!products) return <div>NO PRODUCTS</div>;
-  return <div style={{padding: '16px'}}>
+  return <div style={{paddingLeft: '16px'}}>
     <HeaderComponent cartItemCount={numberOfItems} title={'SHOP'} isClearCartVisible={false} />
 
    <div style={{display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px'}}>

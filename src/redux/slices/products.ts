@@ -34,7 +34,7 @@ const productsSlice = createSlice({
     // Add this reducer to update product quantity when added to cart
     decrementProductQuantity: (state, action: PayloadAction<number>) => {
       const product = state.items.find((item) => item.id === action.payload)
-      if (product && product.quantity > 0) {
+      if (product && product.quantity && product.quantity > 0) {
         product.quantity -= 1
       }
     },

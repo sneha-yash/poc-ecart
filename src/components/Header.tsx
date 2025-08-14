@@ -461,7 +461,7 @@ const HeaderComponent: React.FC<HeaderProps> = ({
         
         <div className="drawer-divider" />
         
-        <div className="drawer-category-header">Categories</div>
+        {/* <div className="drawer-category-header">Categories</div>
         {productCategories.map((category: string, index: number) => (
           <div
             key={index}
@@ -470,7 +470,7 @@ const HeaderComponent: React.FC<HeaderProps> = ({
           >
             {category}
           </div>
-        ))}
+        ))} */}
       </nav>
     </>
   );
