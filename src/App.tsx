@@ -1,25 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+import Products from './pages/Products';
+import Cart from './pages/Cart';
+import NotFound from './pages/NotFound';
+import OrderTracking from './pages/OrderTracking';
+// Dummy components for Products and Cart
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">          
+          <Routes>
+            <Route path="/" element={<Products />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/track-order" element={<OrderTracking />} />
+            <Route path="*" element={<NotFound />} />
+            <Route
+              path="/"
+              element={
+                <p>
+                  Edit <code>src/App.tsx</code> and save to reload.
+                </p>
+              }
+            />
+          </Routes>
+        </header>
+      </div>
+    </Router>
   );
 }
 
