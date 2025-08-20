@@ -47,14 +47,13 @@ export default function ProductCard({product}: {product: Product}) {
       >
         <CardMedia
           component="img"
-          height="200"
+          height="150"
           crossOrigin="anonymous"
           image={product.images?.[0]}
           alt={product.title}
-          sx={{ objectFit: 'cover' }}
         />
 
-        <CardContent sx={{ height: "35%" }}>
+        <CardContent sx={{ height: "127px" }}>
           <Typography variant="h6" component="h2" gutterBottom>
             {product.title}
           </Typography>

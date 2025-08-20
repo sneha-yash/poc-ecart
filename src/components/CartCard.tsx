@@ -1,6 +1,11 @@
 import React from "react";
-import { RemoveCartButton } from "./Buttons";
+import {
+  Add as AddIcon,
+  Remove as RemoveIcon,
+  Delete as DeleteIcon
+} from '@mui/icons-material';
 import type { CartCardProps } from "../interfaces/cart.type";
+import { Avatar, Box, Button, ButtonGroup, Card, CardContent, Chip, IconButton, Typography } from "@mui/material";
 
 const CartCard: React.FC<CartCardProps> = ({
   item,
@@ -17,80 +22,197 @@ const CartCard: React.FC<CartCardProps> = ({
   const hasDiscount = item.originalPrice && item.originalPrice > item.price;
 
   return (
-    <div className="cart-card">
-      <div className="cart-content">
-        <div className="product-section">
-          {/* Product Image */}
-          <div className="image-container">
-            <img
+    <Card
+      elevation={2}
+      sx={{ 
+        borderRadius: 2,
+        '&:hover': {
+          elevation: 4,
+          boxShadow: 3
+        }
+      }}
+    >
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
+          {/* Product Section */}
+          <Box sx={{ display: 'flex', gap: 2, flex: 1, minWidth: '300px' }}>
+            {/* Product Image */}
+            <Avatar
               src={item.images?.[0]}
               alt={item.title}
-              className="product-image"
+              variant="rounded"
+              sx={{
+                width: 80,
+                height: 80,
+                borderRadius: 2
+              }}
             />
-          </div>
 
-          {/* Product Details */}
-          <div className="product-details">
-            <h3 className="product-name">{item.title}</h3>
-            {item.slug && <p className="product-description">{item.slug}</p>}
-
-            {/* Price Display */}
-            <div className="price-container">
-              <span className="current-price">₹ {item.price.toFixed(2)}</span>
-              {hasDiscount && (
-                <>
-                  <span className="original-price">
-                    ₹ {item.originalPrice!.toFixed(2)}
-                  </span>
-                  <span className="sale-badge">SALE</span>
-                </>
+            {/* Product Details */}
+            <Box sx={{ flex: 1 }}>
+              <Typography 
+                variant="h6" 
+                component="h3"
+                sx={{ 
+                  fontWeight: 600,
+                  mb: 1,
+                  lineHeight: 1.2
+                }}
+              >
+                {item.title}
+              </Typography>
+              
+              {item.slug && (
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
+                  {item.slug}
+                </Typography>
               )}
-            </div>
-          </div>
-        </div>
 
-        <div className="controls-section">
-          {/* Quantity Controls */}
-          {onQuantityChange && (
-            <div className="quantity-section">
-              <span className="quantity-label">Quantity</span>
-              <div className="quantity-controls">
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityChange(item.cartQuantity - 1)}
-                  disabled={item.cartQuantity <= 1}
+              {/* Price Display */}
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                <Typography 
+                  variant="h6"
+                  sx={{ 
+                    fontWeight: 700,
+                    color: 'primary.main'
+                  }}
                 >
-                  −
-                </button>
+                  ₹{item.price.toFixed(2)}
+                </Typography>
+                
+                {hasDiscount && (
+                  <>
+                    <Typography 
+                      variant="body2"
+                      sx={{ 
+                        textDecoration: 'line-through',
+                        color: 'text.secondary'
+                      }}
+                    >
+                      ₹{item?.originalPrice?.toFixed(2)}
+                    </Typography>
+                    
+                    <Chip
+                      label="SALE" 
+                      size="small"
+                      color="error"
+                      sx={{ 
+                        fontWeight: 600,
+                        fontSize: '0.7rem'
+                      }}
+                    />
+                  </>
+                )}
+              </Box>
+            </Box>
+          </Box>
 
-                <span className="quantity-display">{item.cartQuantity}</span>
-
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityChange(item.cartQuantity + 1)}
+          {/* Controls Section */}
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: 2,
+            minWidth: '180px',
+            alignItems: 'flex-end'
+          }}>
+            {/* Quantity Controls */}
+            {onQuantityChange && (
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  sx={{ mb: 1 }}
                 >
-                  +
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Total Price and Actions */}
-          <div className="total-section">
-            <div className="total-price">
-              <span className="total-label">Total</span>
-              <span className="total-amount">₹{totalPrice.toFixed(2)}</span>
-            </div>
-            {onRemove && (
-              <RemoveCartButton
-                onClick={() => onRemove(item.id)}
-                title="Remove item"
-              />
+                  Quantity
+                </Typography>
+                
+                <ButtonGroup 
+                  variant="outlined" 
+                  size="small"
+                  sx={{ 
+                    '& .MuiButton-root': {
+                      minWidth: 40,
+                      border: '1px solid',
+                      borderColor: 'divider'
+                    }
+                  }}
+                >
+                  <Button
+                    onClick={() => handleQuantityChange(item.cartQuantity - 1)}
+                    disabled={item.cartQuantity <= 1}
+                  >
+                    <RemoveIcon fontSize="small" />
+                  </Button>
+                  
+                  <Button 
+                    disabled
+                    sx={{ 
+                      color: 'text.primary !important',
+                      fontWeight: 600,
+                      cursor: 'default'
+                    }}
+                  >
+                    {item.cartQuantity}
+                  </Button>
+                  
+                  <Button
+                    onClick={() => handleQuantityChange(item.cartQuantity + 1)}
+                  >
+                    <AddIcon fontSize="small" />
+                  </Button>
+                </ButtonGroup>
+              </Box>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+
+            {/* Total Price and Actions */}
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'flex-end',
+              gap: 1 
+            }}>
+              <Box sx={{ textAlign: 'right' }}>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                >
+                  Total
+                </Typography>
+                <Typography 
+                  variant="h5"
+                  sx={{ 
+                    fontWeight: 700,
+                    color: 'success.main'
+                  }}
+                >
+                  ₹{totalPrice.toFixed(2)}
+                </Typography>
+              </Box>
+              
+              {onRemove && (
+                <IconButton
+                  onClick={() => onRemove(item.id)}
+                  color="error"
+                  size="small"
+                  title="Remove item"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'error.50'
+                    }
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { fetchProducts } from "../redux/slices/products";
 import type { AppDispatch } from "../redux/store";
 import HeaderComponent from "../components/Header";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 function Products() {
   const dispatch = useDispatch<AppDispatch>();
     const { numberOfItems}= useSelector((state: any) => state.cart);
@@ -18,22 +18,22 @@ function Products() {
 
   if (status === 'loading') {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
+      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
         <CircularProgress />
-      </div>
+      </Box>
     )
   }
 
-  if(!products) return <div>NO PRODUCTS</div>;
-  return <div style={{paddingLeft: '16px'}}>
+  if(!products) return <Box>NO PRODUCTS</Box>;
+  return <Box style={{paddingLeft: '16px'}}>
     <HeaderComponent cartItemCount={numberOfItems} title={'SHOP'} isClearCartVisible={false} />
 
-   <div style={{display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px'}}>
+   <Box style={{display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px'}}>
     {products?.map((product: any) => (
       <ProductCard key={product.id} product={product}/>
     ))}
-  </div>
-  </div>;
+  </Box>
+  </Box>;
 }
 
 export default Products;
