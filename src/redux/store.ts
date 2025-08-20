@@ -1,12 +1,12 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { persistStore, persistReducer, Persistor } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
-import productsReducer from './slices/products'
+import {productsApi} from './slices/products'
 import cartReducer from './slices/cart'
 import ordersReducer from './slices/orders'
 
 const rootReducer = combineReducers({
-  products: productsReducer,
+  [productsApi.reducerPath]: productsApi.reducer,
   cart: cartReducer,
   ordersDetails: ordersReducer,
 })
@@ -22,6 +22,8 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(productsApi.middleware),
 })
 
 export const persistor: Persistor = persistStore(store)

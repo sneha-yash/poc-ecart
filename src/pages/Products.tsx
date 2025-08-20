@@ -1,39 +1,64 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import ProductCard from "../components/ProductCard";
-import { useEffect } from "react";
-import { fetchProducts } from "../redux/slices/products";
-import type { AppDispatch } from "../redux/store";
+import { useGetProductsQuery } from "../redux/slices/products";
 import HeaderComponent from "../components/Header";
 import { Box, CircularProgress } from "@mui/material";
+import ProductDetailModal from "../components/ProductDetailModal";
+import { useState } from "react";
+
 function Products() {
-  const dispatch = useDispatch<AppDispatch>();
-    const { numberOfItems}= useSelector((state: any) => state.cart);
-  const { items: products, status } = useSelector((state: any) => state.products);
+  const { numberOfItems } = useSelector((state: any) => state.cart);
+  const { data: products, isLoading } = useGetProductsQuery();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [productId, setProductId] = useState(0)
 
-  useEffect(() => {
-    if(!products.length){
-    dispatch(fetchProducts());
-    }
-  }, [dispatch, products.length]);
-
-  if (status === 'loading') {
-    return (
-      <Box style={{ display: 'flex', justifyContent: 'center', marginTop: 40 }}>
-        <CircularProgress />
-      </Box>
-    )
+  const handleProductDetail = (productId: number) => {
+    setModalOpen(!modalOpen);
+    setProductId(productId)
   }
 
-  if(!products) return <Box>NO PRODUCTS</Box>;
-  return <Box style={{paddingLeft: '16px'}}>
-    <HeaderComponent cartItemCount={numberOfItems} title={'SHOP'} isClearCartVisible={false} />
+  const handleClose =()=>{
+    setModalOpen(false)
+    setProductId(0)
+  }
+  
 
-   <Box style={{display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px'}}>
-    {products?.map((product: any) => (
-      <ProductCard key={product.id} product={product}/>
-    ))}
-  </Box>
-  </Box>;
+  if (isLoading) {
+    return (
+      <Box style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!products) return <Box>NO PRODUCTS</Box>;
+  return (
+    <Box style={{ paddingLeft: "16px" }}>
+      <HeaderComponent
+        cartItemCount={numberOfItems}
+        title={"SHOP"}
+        isClearCartVisible={false}
+      />
+
+      <Box
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "16px",
+          padding: "16px",
+        }}
+      >
+        {products?.map((product: any) => (
+          <ProductCard key={product.id} product={product} handleProductDetail={handleProductDetail}/>
+        ))}
+      </Box>
+      <ProductDetailModal
+        open={modalOpen}
+        onClose={handleClose}
+        productId={productId}
+      />
+    </Box>
+  );
 }
 
 export default Products;
