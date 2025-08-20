@@ -1,14 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import ProductCard from '../components/ProductCard';
 import cartReducer from '../redux/slices/cart';
-
-// Mock the product service
-jest.mock('../services/productService', () => ({
-  fetchProductDetails: jest.fn(),
-}));
 
 const mockStore = configureStore({
   reducer: {
@@ -35,11 +30,13 @@ const mockProduct = {
   updatedAt: '2023-01-01T00:00:00.000Z',
 };
 
+const mockHandleProductDetail = jest.fn();
+
 describe('ProductCard', () => {
   it('renders product information correctly', () => {
     render(
       <Provider store={mockStore}>
-        <ProductCard product={mockProduct} />
+        <ProductCard product={mockProduct} handleProductDetail={mockHandleProductDetail} />
       </Provider>
     );
 
@@ -51,7 +48,7 @@ describe('ProductCard', () => {
   it('dispatches addToCart when button is clicked', () => {
     render(
       <Provider store={mockStore}>
-        <ProductCard product={mockProduct} />
+        <ProductCard product={mockProduct} handleProductDetail={mockHandleProductDetail} />
       </Provider>
     );
 
@@ -68,23 +65,17 @@ describe('ProductCard', () => {
     expect(finalNumberOfItems).toBe(initialNumberOfItems + 1);
   });
 
-  it('opens modal when card is clicked', async () => {
-    const { fetchProductDetails } = require('../services/productService');
-    fetchProductDetails.mockResolvedValue(mockProduct);
-
+  it('calls handleProductDetail when card is clicked', () => {
     render(
       <Provider store={mockStore}>
-        <ProductCard product={mockProduct} />
+        <ProductCard product={mockProduct} handleProductDetail={mockHandleProductDetail} />
       </Provider>
     );
 
-    // Click on the card (but not on the button)
+    // Click on the card title
     const cardTitle = screen.getByText('Test Product');
     fireEvent.click(cardTitle);
 
-    // Wait for modal to appear
-    await waitFor(() => {
-      expect(screen.getByText('Product Details')).toBeInTheDocument();
-    });
+    expect(mockHandleProductDetail).toHaveBeenCalledWith(mockProduct.id);
   });
 });
