@@ -33,7 +33,7 @@ function Products() {
 
   if (!products) return <Box>NO PRODUCTS</Box>;
   return (
-    <Box style={{ paddingLeft: "16px" }}>
+    <Box>
       <HeaderComponent
         cartItemCount={numberOfItems}
         title={"SHOP"}
@@ -44,6 +44,8 @@ function Products() {
         style={{
           display: "flex",
           flexWrap: "wrap",
+          alignItems: 'center',
+          justifyContent: 'center',
           gap: "16px",
           padding: "16px",
         }}

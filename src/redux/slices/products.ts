@@ -18,15 +18,6 @@ export const productsApi = createApi({
       query: (id) => `products/${id}`,
       providesTags: (result, error, id) => [{ type: 'Product', id }],
     }),
-    // Add more endpoints as needed
-    // createProduct: builder.mutation<Product, Partial<Product>>({
-    //   query: (newProduct) => ({
-    //     url: 'products',
-    //     method: 'POST',
-    //     body: newProduct,
-    //   }),
-    //   invalidatesTags: ['Product'],
-    // }),
   }),
 })
 
@@ -34,7 +25,6 @@ export const productsApi = createApi({
 export const { 
   useGetProductsQuery, 
   useGetProductQuery,
-  // useCreateProductMutation, // if you add the mutation
 } = productsApi
 
 // Export the reducer

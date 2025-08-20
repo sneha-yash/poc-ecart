@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { HeaderProps, NavigationItem } from "../interfaces/header.type";
 import { clearCart } from "../redux/slices/cart";
@@ -34,10 +34,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
   onCategoryClick,
   onNavigationClick,
 }) => {
-  const [productsMenuOpen, setProductsMenuOpen] = useState<boolean>(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const productsButtonRef = useRef<HTMLButtonElement>(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -51,20 +49,8 @@ const HeaderComponent: React.FC<HeaderProps> = ({
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
-  const handleProductsMenuToggle = (): void => {
-    setProductsMenuOpen(!productsMenuOpen);
-  };
-
   const handleMobileMenuToggle = (): void => {
     setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const handleCategoryClick = (category: string): void => {
-    setProductsMenuOpen(false);
-    if (onCategoryClick) {
-      onCategoryClick(category);
-    }
-    console.log(`Category clicked: ${category}`);
   };
 
   const handleNavigationClick = (item: string, link: string): void => {
@@ -80,15 +66,6 @@ const HeaderComponent: React.FC<HeaderProps> = ({
   const handleCartClick = (): void => {
     navigate("/cart");
   };
-
-  const productCategories: string[] = [
-    "Electronics",
-    "Clothing",
-    "Home & Garden",
-    "Books",
-    "Sports",
-    "Beauty",
-  ];
 
   const navigationItems: NavigationItem[] = [
     { label: "Home", icon: "🏠", link: "/" },
