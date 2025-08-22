@@ -1,80 +1,90 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { BrowserRouter } from 'react-router-dom';
-import HeaderComponent from '../components/Header';
-import cartReducer from '../redux/slices/cart';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { BrowserRouter } from "react-router-dom";
+import HeaderComponent from "../components/Header";
+import cartReducer from "../redux/slices/cart";
 
 const mockStore = configureStore({
   reducer: {
     cart: cartReducer,
   },
 });
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
+}));
 
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <Provider store={mockStore}>
-      <BrowserRouter>
-        {component}
-      </BrowserRouter>
+      <BrowserRouter>{component}</BrowserRouter>
     </Provider>
   );
 };
 
-describe('HeaderComponent', () => {
+describe("HeaderComponent", () => {
   const mockOnCategoryClick = jest.fn();
   const mockOnNavigationClick = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavigate.mockClear();
   });
 
-  it('renders header with title', () => {
+  it("renders header with title", () => {
     renderWithProviders(
-      <HeaderComponent 
+      <HeaderComponent
         title="Test Shop"
         onCategoryClick={mockOnCategoryClick}
         onNavigationClick={mockOnNavigationClick}
       />
     );
 
-    expect(screen.getByText('Test Shop')).toBeInTheDocument();
+    expect(screen.getByText("Test Shop")).toBeInTheDocument();
   });
 
-  it('renders cart button with item count', () => {
+  it("renders cart button with item count", () => {
     renderWithProviders(
-      <HeaderComponent 
+      <HeaderComponent
+        title="cart"
         cartItemCount={5}
         onCategoryClick={mockOnCategoryClick}
         onNavigationClick={mockOnNavigationClick}
       />
     );
 
-    expect(screen.getByLabelText('Shopping cart with 5 items')).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Shopping cart with 5 items")
+    ).toBeInTheDocument();
   });
 
-  it('shows clear cart button when visible', () => {
+  it("shows clear cart button when visible", () => {
     renderWithProviders(
-      <HeaderComponent 
+      <HeaderComponent
+        title="cart"
         isClearCartVisible={true}
         onCategoryClick={mockOnCategoryClick}
         onNavigationClick={mockOnNavigationClick}
       />
     );
 
-    expect(screen.getByText('Clear Cart')).toBeInTheDocument();
+    expect(screen.getByText("Clear Cart")).toBeInTheDocument();
   });
 
-  it('calls navigation handler when navigation button clicked', () => {
+  it("calls navigation handler when navigation button clicked", () => {
     renderWithProviders(
-      <HeaderComponent 
+      <HeaderComponent
+        title="cart"
         onCategoryClick={mockOnCategoryClick}
         onNavigationClick={mockOnNavigationClick}
       />
     );
 
-    fireEvent.click(screen.getByText('Products'));
-    expect(mockOnNavigationClick).toHaveBeenCalledWith('Home');
+    fireEvent.click(screen.getByText("Products"));
+    expect(mockOnNavigationClick).toHaveBeenCalledWith("Home");
   });
 });
